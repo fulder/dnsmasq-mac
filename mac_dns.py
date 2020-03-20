@@ -55,7 +55,7 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
         for snd, rcv in ans:
             if rcv:
                 ip = rcv[ARP].psrc
-                mac = str(rcv[Ether].src).lower()
+                mac = rcv[Ether].src
                 mapping[mac] = ip
         count += 1
     return mapping
