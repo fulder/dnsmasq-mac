@@ -58,7 +58,6 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
     logger.info("Starting MAC search")
     ip_dns_mapping = {}
 
-    print(mac_names)
     count = 1
     for ip in ips:
         logger.info(f"Sending ARP broadcast for IP {ip} ({count}/{len(ips)})")
