@@ -52,16 +52,19 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
 
 
 def _create_hosts_file(domain_mapping: list, ip_mac_map: dict, out_file: str):
-    with open(out_file, 'w') as fw:
-        for dns_map in domain_mapping:
-            mac = dns_map["mac"]
+    file_lines = []
+    for dns_map in domain_mapping:
+        mac = dns_map["mac"]
 
-            if mac not in ip_mac_map:
-                raise Exception(f"Could not find mac: {mac} in scanned IPs. Range can be invalid")
+        if mac not in ip_mac_map:
+            raise Exception(f"Could not find mac: {mac} in scanned IPs. Range can be invalid")
 
-            ip = ip_mac_map[mac]
-            name = dns_map["name"]
-            fw.write(f"{ip}\t{name}\n")
+        ip = ip_mac_map[mac]
+        name = dns_map["name"]
+        file_lines.append(f"{ip}\t{name}\n")
+
+    with open(out_file, "w") as fw:
+        fw.writelines(file_lines)
 
 
 if __name__ == "__main__":
