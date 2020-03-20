@@ -5,7 +5,6 @@
 
 while true
 do
-    python3 mac_dns.py
     if test -f "trigger_reload"; then
         pkill -1 dnsmasq
         rm trigger_reload
