@@ -20,6 +20,7 @@ def main():
     logger.setLevel(conf["log_level"])
 
     mapping = _get_mac_ip_mapping(conf["iprange"], conf["interface"])
+    _create_hosts_file(conf["mapping"], mapping, conf["output_config"])
 
 
 def _read_config():
