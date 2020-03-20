@@ -20,9 +20,10 @@ def main():
     logger.setLevel(conf["log_level"])
 
     ips = _get_ip_range_list(conf["iprange"])
+    mac_dns = _mac_list_to_dict(conf["mapping"])
 
-    mapping = _get_mac_ip_mapping(ips, conf["interface"])
-    _create_hosts_file(conf["mapping"], mapping, conf["output_config"])
+    mapping = _get_mac_ip_mapping(ips, conf["interface"], mac_dns)
+    _create_hosts_file(mapping, conf["output_config"])
 
 
 def _read_config():
@@ -46,13 +47,25 @@ def _get_ip_range_list(ip_range):
     return ips
 
 
-def _get_mac_ip_mapping(ips: list, interface: str):
-    logger.info("Starting MAC search")
-    mapping = {}
+def _mac_list_to_dict(mapping: list):
+    mac_to_name = {}
+    for m in mapping:
+        mac_to_name[m["mac"].lower()] = m["name"]
+    return mac_to_name
 
+
+def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
+    logger.info("Starting MAC search")
+    ip_dns_mapping = {}
+
+    print(mac_names)
     count = 1
     for ip in ips:
         logger.info(f"Sending ARP broadcast for IP {ip} ({count}/{len(ips)})")
+
+        if len(ip_dns_mapping) == len(mac_names):
+            break
+
         broadcast = Ether(dst="FF:FF:FF:FF:FF:FF")
         arp_request = ARP(pdst=str(ip))
         package = broadcast / arp_request
@@ -62,26 +75,20 @@ def _get_mac_ip_mapping(ips: list, interface: str):
             if rcv:
                 ip = rcv[ARP].psrc
                 mac = rcv[Ether].src
-                mapping[mac] = ip
+
+                if mac in mac_names:
+                    ip_dns_mapping[ip] = mac_names[mac]
+
+        logger.info(f"Found MACs: {len(ip_dns_mapping)} / {len(mac_names)}")
         count += 1
-    return mapping
+    return ip_dns_mapping
 
 
-def _create_hosts_file(domain_mapping: list, ip_mac_map: dict, out_file: str):
-    file_lines = []
-    print(ip_mac_map)
-    for dns_map in domain_mapping:
-        mac = dns_map["mac"].lower()
-
-        if mac not in ip_mac_map:
-            raise Exception(f"Could not find mac: {mac} in scanned IPs. Range can be invalid")
-
-        ip = ip_mac_map[mac]
-        name = dns_map["name"]
-        file_lines.append(f"{ip}\t{name}\n")
-
+def _create_hosts_file(ip_dns_mapping: dict, out_file: str):
     with open(out_file, "w") as fw:
-        fw.writelines(file_lines)
+        for ip in ip_dns_mapping:
+            name = ip_dns_mapping[ip]
+            fw.write(f"{ip}\t{name}\n")
 
 
 if __name__ == "__main__":
