@@ -19,7 +19,9 @@ def main():
     conf = _read_config()
     logger.setLevel(conf["log_level"])
 
-    mapping = _get_mac_ip_mapping(conf["iprange"], conf["interface"])
+    ips = _get_ip_range_list(conf["iprange"])
+
+    mapping = _get_mac_ip_mapping(ips, conf["interface"])
     _create_hosts_file(conf["mapping"], mapping, conf["output_config"])
 
 
@@ -30,10 +32,7 @@ def _read_config():
         return yaml.safe_load(fs)
 
 
-def _get_mac_ip_mapping(ip_range: str, interface: str):
-    logger.info("Starting MAC search")
-    mapping = {}
-
+def _get_ip_range_list(ip_range):
     if "/32" in ip_range:
         ips = [ipaddress.IPv4Address(ip_range.split("/32")[0])]
     elif "/" not in ip_range:
@@ -43,6 +42,13 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
 
     if not ips:
         raise Exception(f"No ips found in range: {ip_range}")
+
+    return ips
+
+
+def _get_mac_ip_mapping(ips: list, interface: str):
+    logger.info("Starting MAC search")
+    mapping = {}
 
     count = 1
     for ip in ips:
