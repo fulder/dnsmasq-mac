@@ -1,3 +1,4 @@
 .idea
 
 mac_dns.yaml
+dnsmasq_hosts.conf
