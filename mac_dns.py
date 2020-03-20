@@ -81,6 +81,10 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
 
         logger.info(f"Found MACs: {len(ip_dns_mapping)} / {len(mac_names)}")
         count += 1
+
+    if len(ip_dns_mapping) != len(mac_names):
+        logger.warning(f"Found ips: {ip_dns_mapping}")
+        raise Exception("Couldn't find all specified MAC addresses, make sure the range is correct")
     return ip_dns_mapping
 
 
