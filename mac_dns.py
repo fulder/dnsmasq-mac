@@ -6,9 +6,11 @@ from scapy.sendrecv import srp
 
 
 broadcast = Ether(dst="FF:FF:FF:FF:FF:FF")
-arp_request = ARP(pdst="192.168.1.1/24")
+arp_request = ARP(pdst="192.168.1.1/32")
 ans, uans = srp(broadcast / arp_request, iface="enp0s31f6", timeout=2, inter=1)
 
 for snd, rcv in ans:
-    print(rcv.sprintf(r"%Ether.src% - %ARP.psrc%"))
-print("\nScan complete")
+    if rcv:
+        ip = rcv[ARP].psrc
+        mac = rcv[Ether].src
+        print(f"{ip} - {mac}")
