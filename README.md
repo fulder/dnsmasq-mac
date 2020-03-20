@@ -6,7 +6,7 @@ This script uses [scapy](https://github.com/secdev/scapy) and, performing an ARP
 * Remove the `.example` suffix from `mac_dns.yaml.example`
 * `sudo python3 mac_dns.py`
 
-#Example
+# Example
 
 Lets assume there exists a device with a MAC address `AA:BB:11:22:33:44` with corresponding LAN IP address: `192.168.1.139` 
 Config:
