@@ -1,5 +1,6 @@
 import ipaddress
 import logging
+import os
 import sys
 
 import yaml
@@ -88,10 +89,25 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
 
 
 def _create_hosts_file(ip_dns_mapping: dict, out_file: str):
+    current_conf = None
+    if os.path.isfile(out_file):
+        with open(out_file, "r") as fr:
+            current_conf = fr.readlines()
+
+    lines_to_write = []
+    for ip in ip_dns_mapping:
+        name = ip_dns_mapping[ip]
+        lines_to_write.append(f"{ip}\t{name}\n")
+
+    if set(current_conf) == set(lines_to_write):
+        logger.info(f"Output file: {out_file} already up to date")
+        return
+
     with open(out_file, "w") as fw:
-        for ip in ip_dns_mapping:
-            name = ip_dns_mapping[ip]
-            fw.write(f"{ip}\t{name}\n")
+        fw.writelines(lines_to_write)
+
+    # Create a file to notfiy reload_config.sh script
+    open("trigger_reload", "w").close()
 
 
 if __name__ == "__main__":
