@@ -55,7 +55,7 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
         for snd, rcv in ans:
             if rcv:
                 ip = rcv[ARP].psrc
-                mac = rcv[Ether].src
+                mac = str(rcv[Ether].src).lower()
                 mapping[mac] = ip
         count += 1
     return mapping
@@ -63,8 +63,9 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
 
 def _create_hosts_file(domain_mapping: list, ip_mac_map: dict, out_file: str):
     file_lines = []
+    print(ip_mac_map)
     for dns_map in domain_mapping:
-        mac = dns_map["mac"]
+        mac = dns_map["mac"].lower()
 
         if mac not in ip_mac_map:
             raise Exception(f"Could not find mac: {mac} in scanned IPs. Range can be invalid")
