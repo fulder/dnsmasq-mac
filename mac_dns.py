@@ -34,6 +34,10 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
     logger.info("Starting MAC search")
     mapping = {}
     ips = list(ipaddress.ip_network(ip_range).hosts())
+
+    if not ips:
+        raise Exception(f"No ips found in range: {ip_range}")
+
     count = 1
     for ip in ips:
         logger.info(f"Sending ARP broadcast for IP {ip} ({count}/{len(ips)})")
