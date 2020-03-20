@@ -8,6 +8,7 @@ from scapy.sendrecv import srp
 
 def main():
     conf = _read_config()
+    _get_mac_ip_mapping(conf["iprange"], conf["interface"])
 
 
 def _read_config():
@@ -15,14 +16,14 @@ def _read_config():
         return yaml.safe_load(fs)
 
 
-def _get_mac_ip_mapping():
+def _get_mac_ip_mapping(ip_range: str, interface: str):
     mapping = {}
-    ips = ipaddress.ip_network('192.168.1.0/30')
+    ips = ipaddress.ip_network(ip_range)
     for ip in ips:
         broadcast = Ether(dst="FF:FF:FF:FF:FF:FF")
         arp_request = ARP(pdst=str(ip))
         package = broadcast / arp_request
-        ans, uans = srp(package, iface="eth0", timeout=0.1, verbose=False)
+        ans, uans = srp(package, iface=interface, timeout=0.1, verbose=False)
 
         for snd, rcv in ans:
             if rcv:
