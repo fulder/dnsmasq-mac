@@ -107,9 +107,6 @@ def _create_hosts_file(ip_dns_mapping: dict, out_file: str):
     with open(out_file, "w") as fw:
         fw.writelines(lines_to_write)
 
-    # Create a file to notfiy reload_config.sh script
-    open("trigger_reload", "w").close()
-
 
 if __name__ == "__main__":
     setup_logger()
