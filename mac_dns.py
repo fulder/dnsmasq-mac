@@ -8,6 +8,7 @@ from scapy.layers.l2 import ARP, Ether
 from scapy.sendrecv import srp
 
 logger = logging.getLogger(__name__)
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def setup_logger():
@@ -22,13 +23,14 @@ def main():
 
     ips = _get_ip_range_list(conf["iprange"])
     mac_dns = _mac_list_to_dict(conf["mapping"])
+    out_path = os.path.join(CURRENT_DIR, conf["output_config"])
 
     mapping = _get_mac_ip_mapping(ips, conf["interface"], mac_dns)
-    _create_hosts_file(mapping, conf["output_config"])
+    _create_hosts_file(mapping, out_path)
 
 
 def _read_config():
-    config_file = "mac_dns.yaml"
+    config_file = os.path.join(CURRENT_DIR, "mac_dns.yaml")
     logger.info(f"Loading config from {config_file}")
     with open(config_file, 'r') as fs:
         return yaml.safe_load(fs)
