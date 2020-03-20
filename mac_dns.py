@@ -50,6 +50,6 @@ def _get_mac_ip_mapping(ip_range: str, interface: str):
     return mapping
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     setup_logger()
     sys.exit(main())
