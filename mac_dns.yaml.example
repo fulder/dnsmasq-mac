@@ -10,5 +10,5 @@
     name: "<NAME>"
 
 # hosts config path to write IP - DNS name entries to
-output_config: "dnsmasq_hosts.conf"
+output_config: "hosts.conf"
 
