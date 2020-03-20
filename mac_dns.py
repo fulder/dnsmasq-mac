@@ -33,7 +33,13 @@ def _read_config():
 def _get_mac_ip_mapping(ip_range: str, interface: str):
     logger.info("Starting MAC search")
     mapping = {}
-    ips = list(ipaddress.ip_network(ip_range).hosts())
+
+    if "/32" in ip_range:
+        ips = [ipaddress.IPv4Address(ip_range.split("/32")[0])]
+    elif "/" not in ip_range:
+        ips = [ipaddress.IPv4Address(ip_range)]
+    else:
+        ips = list(ipaddress.ip_network(ip_range).hosts())
 
     if not ips:
         raise Exception(f"No ips found in range: {ip_range}")
