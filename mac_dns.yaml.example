@@ -1,0 +1,11 @@
+# IP Range
+"iprange": "192.168.1.0/24"
+
+# Interface to use for the arp scan
+"interface": "eth0"
+
+# MAC to Domain Name mapping
+"mapping":
+  - mac: "<MAC>"
+    name: "<NAME>"
+
