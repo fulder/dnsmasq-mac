@@ -63,7 +63,7 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
 
     count = 1
     for ip in ips:
-        logger.info(f"Sending ARP broadcast for IP {ip} ({count}/{len(ips)})")
+        logger.debug(f"Sending ARP broadcast for IP {ip} ({count}/{len(ips)})")
 
         if len(ip_dns_mapping) == len(mac_names):
             break
@@ -79,9 +79,10 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
                 mac = rcv[Ether].src
 
                 if mac in mac_names:
+                    logger.info(f"Found IP for name: {mac_names[mac]} ({count}/{len(ips)})")
                     ip_dns_mapping[ip] = mac_names[mac]
 
-        logger.info(f"Found MACs: {len(ip_dns_mapping)} / {len(mac_names)}")
+        logger.debug(f"Found MACs: {len(ip_dns_mapping)} / {len(mac_names)}")
         count += 1
 
     if len(ip_dns_mapping) != len(mac_names):
