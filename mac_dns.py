@@ -79,8 +79,8 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
                 mac = rcv[Ether].src
 
                 if mac in mac_names:
-                    logger.info(f"Found IP for name: ${mac_names[mac]} ({len(ip_dns_mapping)} / {len(mac_names)})")
                     ip_dns_mapping[ip] = mac_names[mac]
+                    logger.info(f"Found IP for name: ${mac_names[mac]} ({len(ip_dns_mapping)} / {len(mac_names)})")
 
         logger.debug(f"Found MACs: {len(ip_dns_mapping)} / {len(mac_names)}")
         count += 1
