@@ -85,8 +85,7 @@ def _get_mac_ip_mapping(ips: list, interface: str, mac_names: dict):
         count += 1
 
     if len(ip_dns_mapping) != len(mac_names):
-        logger.warning(f"Not found names:{set(mac_names.values()) - set(ip_dns_mapping.values())}")
-        raise Exception("Couldn't find all specified MAC addresses, make sure the range and all ARNs are correct")
+        logger.warning(f"All names not found, ignoring:{set(mac_names.values()) - set(ip_dns_mapping.values())}")
     return ip_dns_mapping
 
 
